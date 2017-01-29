@@ -179,6 +179,7 @@ def addWebsite(url,enjoyed):
 def testWebsite(url):
     x = morphToVector(url)
     odds = sigmoid(dot(theta,x))
+    return odds
     print("Odds of enjoying " + url + ": " + str(100 * odds) + "%")
 
 ####    TESTS
