@@ -68,7 +68,7 @@ def get_popular_words(words):
 
 ####    MATH
 NUM_ITERS = 30 #Number of iterations of gradient descent
-LEARNING_RATE = 0.01
+LEARNING_RATE = 0.8
 xs = []
 curwords = []
 theta = []
@@ -134,6 +134,9 @@ def modifyThetas():
 def gradientDescent():
     global theta
     for i in range(0,NUM_ITERS):
+        if(cost() < 0.00000001): 
+            print("Good enough")
+            break
         print("Cost: " + str(cost()))
 #        print("Theta: " + str(theta))
         theta = modifyThetas()
@@ -164,10 +167,21 @@ def addWebsite(url,enjoyed):
 addWebsite("http://www.archlinux.org",1)
 addWebsite("http://www.vim.org",1)
 addWebsite("http://programming.reddit.com",1)
+addWebsite("https://www.gnu.org/s/emacs",0)
+addWebsite("http://www.apple.com",0)
 
-print(curwords)
-print(theta)
+#print(curwords)
+#print(theta)
 
-#mchacks = get_html_words("http://www.mcgill.ca").lower().split()
-#mchacks = get_decent_words(mchacks)
-#print(mchacks)
+tests = ["http://www.archlinux.org","https://www.gnu.org/s/emacs","http://www.mchacks.io","https://www.debian.org"]
+
+for test in tests:
+    x = []
+    website = get_html_words(test).lower().split()
+    wordcount = get_word_count(website)
+    for i in range(0,len(curwords)):
+        if (curwords[i] in website): 
+            x.append(wordcount[curwords[i]])
+        else: x.append(0)
+    odds = sigmoid(dot(theta,x))
+    print("Odds of enjoying " + test + ": " + str(100 * odds) + "%")
