@@ -176,19 +176,24 @@ def addWebsite(url,enjoyed):
     while(len(theta) < len(curwords)): theta.append(0)
     gradientDescent()
 
+def testWebsite(url):
+    x = morphToVector(url)
+    odds = sigmoid(dot(theta,x))
+    print("Odds of enjoying " + url + ": " + str(100 * odds) + "%")
+
 ####    TESTS
-addWebsite("http://www.archlinux.org",1)
-addWebsite("http://www.vim.org",1)
-addWebsite("http://programming.reddit.com",1)
-addWebsite("https://www.gnu.org/s/emacs",0)
-addWebsite("http://www.apple.com",0)
+#addWebsite("http://www.archlinux.org",1)
+#addWebsite("http://www.vim.org",1)
+#addWebsite("http://programming.reddit.com",1)
+#addWebsite("https://www.gnu.org/s/emacs",0)
+#addWebsite("http://www.apple.com",0)
 
 #print(curwords)
 #print(theta)
 
-tests = ["http://www.archlinux.org","https://www.gnu.org/s/emacs","http://www.mchacks.io","https://www.debian.org","http://www.python.ca","https://www.twitter.com/realDonaldTrump","https://feraligatr.tumblr.com","https://thingsprogrammersshout.tumblr.com","http://www.ratemypoo.com"]
+#tests = ["http://www.archlinux.org","https://www.gnu.org/s/emacs","http://www.mchacks.io","https://www.debian.org","http://www.python.ca","https://www.twitter.com/realDonaldTrump","https://feraligatr.tumblr.com","https://thingsprogrammersshout.tumblr.com","http://www.ratemypoo.com"]
 
-for test in tests:
-    x = morphToVector(test)
-    odds = sigmoid(dot(theta,x))
-    print("Odds of enjoying " + test + ": " + str(100 * odds) + "%")
+#for test in tests:
+#    x = morphToVector(test)
+#    odds = sigmoid(dot(theta,x))
+#    print("Odds of enjoying " + test + ": " + str(100 * odds) + "%")
