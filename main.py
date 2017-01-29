@@ -3,6 +3,9 @@ import math
 import re
 import os
 import urllib.request
+from requests.exceptions import HTTPError
+from socket import error as SocketError
+from http.cookiejar import CookieJar
 from bs4 import BeautifulSoup
 from collections import Counter
 
@@ -14,6 +17,19 @@ BEST_WORDS = 10
 
 #Returns list of reasonable words from html page
 def get_html_words(url):
+    response = ""
+    hdr = {'User-Agent': 'Mozilla/5.0'}
+    try:
+        req = urllib.request.Request(url,None, hdr)
+        cj = CookieJar()
+        opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+        response = opener.open(req)
+        raw_response = response.read().decode('utf8',errors='ignore')
+        response.close()
+    except urllib.request.HTTPError as inst:
+        output = format(inst)
+        print(output)
+        return []
     page = urllib.request.urlopen(url).read()
     soup = BeautifulSoup(page,"html.parser")
     for script in soup(["script","style"]):
@@ -151,6 +167,7 @@ def gradientDescent():
 def morphToVector(url):
     x = []
     website = get_html_words(url).lower().split()
+    if(len(website) == 0): return []
     wordcount = get_word_count(website)
     for i in range(0,len(curwords)):
         if(curwords[i] in website):
@@ -160,8 +177,9 @@ def morphToVector(url):
 
 #Adds a website to the training set
 def addWebsite(url,enjoyed):
-    y.append(enjoyed)
     website = get_html_words(url).lower().split()
+    if(len(website) == 0): return
+    y.append(enjoyed)
     popularwords = get_decent_words(website)
     newwords = [w for w in popularwords if not w in curwords]
     curwords.extend(newwords)
@@ -178,6 +196,7 @@ def addWebsite(url,enjoyed):
 
 def testWebsite(url):
     x = morphToVector(url)
+    if(len(x) == 0): return 0
     odds = sigmoid(dot(theta,x))
     return odds
     print("Odds of enjoying " + url + ": " + str(100 * odds) + "%")

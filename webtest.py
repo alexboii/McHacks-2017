@@ -27,12 +27,21 @@ html = """<html>
             </body>
             </html>"""
 
-likes = ["BarackObama","SNL","Shia Labeouf","British Museum", "Kermit the Frog", "Lin-Manuel Miranda", "Disney","Ellen Degeneres", "Earth Day Network", "Aubrey Plaza", "CNN International", "Natural History Museum London"]
+likes = ["Barack Obama","SNL","Shia Labeouf","British Museum", "Kermit the Frog", "Lin-Manuel Miranda", "Disney","Ellen Degeneres", "Earth Day Network", "Aubrey Plaza", "CNN International", "Natural History Museum London"]
 
-urls = scraper.getURLs(likes[6],10)
+for i in range(0,len(likes)):
+    likes[i] = likes[i].replace(' ','')
+
+print(likes)
+
+urls = scraper.getURLs(likes[0],10)
 scores = []
-#for i in urls:
-#    scores.append(testWebsite(str(i,'utf-8')))
+#print("Beginning score generation")
+#for i in range(0,len(urls)):
+#    print("Appending score for " + urls[i] + "...")
+#    scores.append(testWebsite(urls[i]))
+#print("Ended score generation.")
+#print("Beginning sorting process")
 #for i in range(0,len(urls)):
 #    for j in range(i+1,len(urls)):
 #        if scores[j] > scores[i]:
@@ -42,7 +51,7 @@ scores = []
 #            tmp = scores[j]
 #            scores[j] = scores[i]
 #            scores[i] = tmp
-
+#
 #urls.sort(key=lambda x: testWebsite(str(x,'utf-8')))
 count = 0
 
