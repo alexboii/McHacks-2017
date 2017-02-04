@@ -24,7 +24,7 @@ def getURLs(s,n):
         output = format(inst)
         print(output)
     matches = findall(b'''href=["'](.[^"']+)["']''',urllib.request.urlopen(req).read(),re.I)
-    matches = [urllib.parse.quote((w.split(b"&")[0]).strip()) for w in matches if not b"google" in w and not b"youtube" in w and not b"wikipedia" in w and not b"search" in w and not b"blogger" in w and not b"bing" in w and b"http" in w]
+    matches = [urllib.parse.quote((w.split(b"&")[0]).strip()) for w in matches if not b"google" in w and not b"youtube" in w and not b"wikipedia" in w and not b"search" in w and not b"blogger" in w and not b"bing" in w and not b"go.microsoft" in w and not b"choice.microsoft" in w and b"http" in w]
     if n < len(matches): n = len(matches)
     for i in matches[:n]:
         if((i.startswith("/url?q="))): i = i[7:]

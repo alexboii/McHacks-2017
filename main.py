@@ -51,7 +51,7 @@ more_crap.extend(["com","hours","minutes","seconds","org","ca","co","www","days"
 
 #Returns list of the top <BEST_WORDS> words in a given word set based on the amount of occurances
 def get_decent_words(words):
-    words = [w for w in words if not w in more_crap]
+    words = [w for w in words if not w in more_crap and len(w) > 2]
     word_counter = {}
     for word in words:
         if word in word_counter:
@@ -73,7 +73,7 @@ def get_word_count(words):
 
 #Returns list of words sorted by the amount of occurances
 def get_popular_words(words):
-    words = [w for w in words if not w in more_crap]
+    words = [w for w in words if not w in more_crap and len(w) > 2]
     word_counter = {}
     for word in words:
         if word in word_counter:
@@ -161,7 +161,6 @@ def gradientDescent():
         print("Cost: " + str(cost()))
         theta = modifyThetas()
     print("===========")
-####    END MACHINE LEARNING
 
 #Returns vector corresponding to words in a given site
 def morphToVector(url):
@@ -174,11 +173,27 @@ def morphToVector(url):
             x.append(wordcount[curwords[i]])
         else: x.append(0)
     return x
+####    END MACHINE LEARNING
+
+####    APPLICATION
+blacklist = []
+
+def isBlacklisted(url):
+    for i in range(0,len(blacklist)):
+        if blacklist[i] in url: return True
+    return False
+
+def countNonBlacklisted(urls):
+    count = 0
+    for i in range(0,len(urls)):
+        if not isBlacklisted(urls[i]): count = count + 1
+    return count
 
 #Adds a website to the training set
 def addWebsite(url,enjoyed):
     website = get_html_words(url).lower().split()
     if(len(website) == 0): return
+    if not enjoyed: blacklist.append(url)
     y.append(enjoyed)
     popularwords = get_decent_words(website)
     newwords = [w for w in popularwords if not w in curwords]

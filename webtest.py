@@ -4,6 +4,9 @@ import scraper
 import requests
 import html.parser
 import urllib
+import random
+import math
+from random import randrange
 from requests.exceptions import HTTPError
 from socket import error as SocketError
 from http.cookiejar import CookieJar
@@ -21,21 +24,21 @@ html = """<html>
                     <input type="text" value="" name="site" />
                     <button type="submit">Test For Enjoyment</button>
                 </form>
-                <form method="get" action="recommend">
+                <form method="get" action="superiorrecommend">
                     <button type = "submit">Get Recommendation</button>
                 </form>
             </body>
             </html>"""
 
-likes = ["Barack Obama","SNL","Shia Labeouf","British Museum", "Kermit the Frog", "Lin-Manuel Miranda", "Disney","Ellen Degeneres", "Earth Day Network", "Aubrey Plaza", "CNN International", "Natural History Museum London"]
+likes = ["Barack Obama","SNL","Montreal","NHL", "Sports", "Spotify", "Disney","Ellen Degeneres", "Movie", "Politics", "Science", "Programming"]
 
 for i in range(0,len(likes)):
     likes[i] = likes[i].replace(' ','')
 
-print(likes)
+#print(likes)
 
-urls = scraper.getURLs(likes[0],10)
-scores = []
+urls = scraper.getURLs(likes[randrange(len(likes))],40)
+#scores = []
 #print("Beginning score generation")
 #for i in range(0,len(urls)):
 #    print("Appending score for " + urls[i] + "...")
@@ -78,7 +81,33 @@ class Test(object):
     @cherrypy.expose
     def recommend(self):
         global count
-        result = html + "Recommended site: <a href=" + urls[count] + ">" + urls[count] + "</a>"
+        urls = scraper.getURLs(likes[randrange(len(likes))],40)
+        result = html + "Recommended site: <a href=" + urls[count%len(urls)] + ">" + urls[count%len(urls)] + "</a>"
         count = (count + 1)%len(urls)
         return result
+    @cherrypy.expose
+    def superiorrecommend(self):
+        global count
+        global theta
+        if(len(main.theta) < 50): return self.recommend()
+        else:
+            probs = []
+            for i in range(0,len(main.theta)):
+                if main.theta[i] < 0: continue
+                for j in range(0,math.floor(main.theta[i])):
+                    probs.append(i)
+
+            word = curwords[probs[randrange(len(probs))]]
+            urls = scraper.getURLs(word,40)
+#            max_val = max(main.theta)
+#            max_index = main.theta.index(max_val)
+            while(main.countNonBlacklisted(urls) < 5):
+                word = curwords[probs[randrange(len(probs))]]
+                urls = scraper.getURLs(word,40)
+            pos = randrange(len(urls))
+            while main.isBlacklisted(urls[pos]): pos = randrange(len(urls))
+            result = html + "Recommended site: <a href=" + urls[pos] + ">" + urls[pos] + "</a>"
+            count = (count + 1)%len(urls)
+            return result
+
 cherrypy.quickstart(Test())
